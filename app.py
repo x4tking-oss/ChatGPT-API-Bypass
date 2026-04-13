@@ -3,13 +3,12 @@ from pydantic import BaseModel
 import sys
 import os
 
-# Megakadályozzuk a bytecode írást, ahogy az example.py-ban is tetted
+# Megakadályozzuk a felesleges fájlok írását
 sys.dont_write_bytecode = True
 from chatgptapibypass.core import chatgpt
 
 app = FastAPI(title="ChatGPT Bypass API")
 
-# Bemeneti adatstruktúra definiálása
 class PromptRequest(BaseModel):
     prompt: str
     search: bool = False
@@ -17,17 +16,17 @@ class PromptRequest(BaseModel):
 @app.post("/api/chat")
 def ask_chatgpt(request: PromptRequest):
     try:
-        # Meghívjuk a te core.py-ban lévő függvényedet
+        # A core.py-ban lévő függvényed hívása
         response = chatgpt(prompt=request.prompt, search=request.search)
         
         if response:
             return {"status": "success", "response": response}
         else:
-            raise HTTPException(status_code=500, detail="Nem sikerült választ generálni (lehet hogy Timeout vagy Captcha).")
+            raise HTTPException(status_code=500, detail="Nem érkezett válasz a ChatGPT-től.")
             
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/")
 def read_root():
-    return {"message": "A ChatGPT API Bypass szerver fut!"}
+    return {"status": "online", "message": "A szerver fut és fogadja a kéréseket."}
