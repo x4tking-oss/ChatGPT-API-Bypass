@@ -41,6 +41,7 @@ def chatgpt(prompt: str, search: bool = False) -> str | None:
 
        
         options = uc.ChromeOptions()
+        options.add_argument('--headless=new')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--disable-gpu')
